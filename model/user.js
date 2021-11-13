@@ -22,19 +22,15 @@ module.exports = (sequelize, Sequelize) => {
     },
     gender: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     phone_number: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     state: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     country: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
   });
   return Users;

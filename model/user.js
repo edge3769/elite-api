@@ -20,10 +20,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        confirm_password: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
         gender: {
             type: Sequelize.STRING,
             allowNull: false

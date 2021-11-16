@@ -1,7 +1,6 @@
 const { hash, compare } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../model");
-const config = require("dotenv").config();
 const users = db.users;
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -50,7 +49,7 @@ exports.handleUserRegistration = async (req, res) => {
   const { firstname, lastname, password, email } = req.body;
 
   try {
-    if (!firstname && !lastname && !password && !email) {
+    if (!firstname || !lastname || !password || !email) {
       throw new Error("Bad Request");
     }
 

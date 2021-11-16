@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("ticketxpress", "Jimoh", "12345678", {
+const sequelize = new Sequelize("ticket-xpress", "adminName", "password", {
   host: "localhost",
   dialect: "mysql",
   pool: {

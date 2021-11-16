@@ -1,7 +1,4 @@
 const jwt = require("jsonwebtoken");
-const config = require("dotenv");
-config();
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 verifyToken = (req, res, next) => {
@@ -20,6 +17,7 @@ verifyToken = (req, res, next) => {
     }
 
     req.userId = decoded.id;
+    next();
   });
 };
 

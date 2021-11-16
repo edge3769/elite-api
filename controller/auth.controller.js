@@ -1,6 +1,9 @@
 const { hash, compare } = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const db = require("../model");
+const config = require("dotenv").config();
 const users = db.users;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.handleUserLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -22,13 +25,21 @@ exports.handleUserLogin = async (req, res) => {
     }
 
     // Create token and send to client
+    let payload = {
+      id: user.id,
+    };
+
+    let token = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: 3600,
+    });
+
     res.status(200).send({
       user: {
         email: user.email,
         firstname: user.firstname,
         lastname: user.lastname,
       },
-      token: "token goes here",
+      token,
     });
   } catch (err) {
     res.status(400).send({ message: err.message || "Bad request" });
@@ -43,6 +54,13 @@ exports.handleUserRegistration = async (req, res) => {
       throw new Error("Bad Request");
     }
 
+    if (password.length < 8) {
+      return res.json({
+        status: "error",
+        error: "Password too small. Should be atleast 8 characters",
+      });
+    }
+
     const hashedPassword = await hash(password, 10);
     const response = await users.create({
       firstname,
@@ -52,14 +70,16 @@ exports.handleUserRegistration = async (req, res) => {
     });
 
     if (!response) {
-      res.status(500).send({ message: "Something went wrong, try again" });
+      res.status(400).send({ message: "Bad request" });
       return;
     }
 
     res.status(201).send({
-      message: `User ${lastname} ${firstname} Created`,
+      message: `User ${lastname} ${firstname} Created Successfully!`,
     });
   } catch (err) {
-    res.status(403).send({ message: err.message || "Bad request" });
+    res.status(403).send({
+      message: "User with this email already exists.",
+    });
   }
 };

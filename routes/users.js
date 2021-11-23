@@ -1,9 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const { getUserDetails, resetUserPassword } = require("../controller/user.controller");
+const jwtAuth = require("../middleware/auth");
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const router = require("express").Router();
+router.get("/", jwtAuth.verifyToken, getUserDetails);
+router.post("/resetpassword" , jwtAuth.verifyToken , resetUserPassword);
 
 module.exports = router;

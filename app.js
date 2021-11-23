@@ -17,20 +17,35 @@ app.set("view engine", "pug");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    credentials: true,
+  })
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/api/user", usersRouter);
 app.use("/api/auth", authRouter);
 
 // Syncing The Database Tables
 db.sequelize
   .sync({ force: true })
-  .then(() => {
-    console.log("Dropping And Re-creating");
+  .then(async () => {
+    try {
+      const user = await db.roles.create({ roleName: "user" });
+      const agent = await db.roles.create({ roleName: "agent" });
+      const admin = await db.roles.create({ roleName: "admin" });
+
+      if (user && agent && admin) {
+        console.log("Roles Created");
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
   })
   .catch((err) => {
     console.error(err.message || "Something went wrong");

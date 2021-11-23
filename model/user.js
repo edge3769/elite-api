@@ -32,6 +32,13 @@ module.exports = (sequelize, Sequelize) => {
     country: {
       type: Sequelize.STRING,
     },
+    status: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
+    refreshToken: {
+      type: Sequelize.STRING,
+    },
   });
   return Users;
 };

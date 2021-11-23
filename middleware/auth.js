@@ -1,24 +1,26 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET;
 
 verifyToken = (req, res, next) => {
-  let token = req.headers["Authorization"];
-  if (!token) {
+  console.log(req.headers);
+  const authorization = req.headers["authorization"];
+  if (!authorization) {
     return res.status(403).send({
       message: "Unauthorized Access",
     });
   }
 
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).send({
-        message: "Unaathorized Access",
-      });
-    }
-
-    req.userId = decoded.id;
+  const token = authorization.split(" ")[1];
+  try {
+    if (!token) throw new Error();
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.id = decoded.id;
     next();
-  });
+  } catch (err) {
+    res.status(401).send({
+      message: err.message || "Not authorized",
+    });
+  }
 };
 
 const jwtAuth = { verifyToken };

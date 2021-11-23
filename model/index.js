@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const { DB_NAME , DB_USER , DB_HOST, DB_PASSWORD} = process.env;
+const { DB_NAME, DB_USER, DB_HOST, DB_PASSWORD } = process.env;
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   dialect: "mysql",
@@ -12,7 +12,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 });
 
 const users = require("./user")(sequelize, Sequelize);
-
+const roles = require("./role.model")(sequelize, Sequelize);
 sequelize
   .authenticate()
   .then(() => {
@@ -24,6 +24,9 @@ const db = {
   sequelize,
   Sequelize,
   users,
+  roles,
 };
 
+roles.hasMany(users);
+users.belongsTo(roles);
 module.exports = db;

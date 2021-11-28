@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET;
 
 verifyToken = (req, res, next) => {
-  console.log(req.headers);
   const authorization = req.headers["authorization"];
   if (!authorization) {
     return res.status(403).send({
@@ -14,7 +13,7 @@ verifyToken = (req, res, next) => {
   try {
     if (!token) throw new Error();
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.id = decoded.id;
+    req.user = decoded;
     next();
   } catch (err) {
     res.status(401).send({

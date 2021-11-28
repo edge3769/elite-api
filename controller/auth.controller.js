@@ -25,7 +25,7 @@ exports.handleUserLogin = async (req, res) => {
     if (!isPassword) {
       throw new Error("Invalid Email/Password");
     }
-
+    console.log(user);
     // Create token and send to client
     const accessToken = createAccessToken(user);
     const refreshToken = createRefreshToken(user);
@@ -34,7 +34,7 @@ exports.handleUserLogin = async (req, res) => {
       { refreshToken },
       { where: { id: user.id } }
     );
-
+    console.log(refreshToken);
     if (response.length === 1) {
       sendRefreshToken(refreshToken, res);
       sendAccessToken(accessToken, res);
@@ -96,7 +96,10 @@ exports.handleRefreshToken = async (req, res) => {
     if (!refreshToken) throw new Error();
 
     const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const user = await users.findOne({ where: { id: payload.id } });
+    const user = await users.findOne({
+      where: { id: payload.id },
+      include: db.roles,
+    });
     if (!user) throw new Error();
     if (user.refreshToken !== refreshToken) throw new Error();
     const accessToken = createAccessToken(user);

@@ -6,10 +6,11 @@ exports.createAccessToken = (user) => {
     email: user.email,
     firstname: user.firstname,
     lastname: user.lastname,
+    role: user.role.roleName,
   };
 
   return sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "10m",
   });
 };
 
@@ -19,6 +20,7 @@ exports.createRefreshToken = (user) => {
     email: user.email,
     firstname: user.firstname,
     lastname: user.lastname,
+    role: user.role.roleName,
   };
 
   return sign(payload, process.env.REFRESH_TOKEN_SECRET, {

@@ -8,6 +8,7 @@ var logger = require("morgan");
 const db = require("./model");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const busRouter = require("./routes/bus.route");
 const authRouter = require("./routes/auth.route");
 var app = express();
 
@@ -19,7 +20,11 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://localhost:3002",
+    ],
     credentials: true,
   })
 );
@@ -30,26 +35,26 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/api/user", usersRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/bus", busRouter);
 
 // Syncing The Database Tables
-db.sequelize
-  .sync({ force: true })
-  .then(async () => {
-    try {
-      const user = await db.roles.create({ roleName: "user" });
-      const agent = await db.roles.create({ roleName: "agent" });
-      const admin = await db.roles.create({ roleName: "admin" });
+db.sequelize.sync();
+// .then(async () => {
+//   try {
+//     const user = await db.roles.create({ roleName: "user" });
+//     const agent = await db.roles.create({ roleName: "agent" });
+//     const admin = await db.roles.create({ roleName: "admin" });
 
-      if (user && agent && admin) {
-        console.log("Roles Created");
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  })
-  .catch((err) => {
-    console.error(err.message || "Something went wrong");
-  });
+//     if (user && agent && admin) {
+//     console.log("Roles Created");
+//     }
+//   } catch (err) {
+//     console.log(err.message);
+//   }
+// })
+// .catch((err) => {
+//   console.error(err.message || "Something went wrong");
+// });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

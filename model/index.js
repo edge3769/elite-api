@@ -13,6 +13,11 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 
 const users = require("./user")(sequelize, Sequelize);
 const roles = require("./role.model")(sequelize, Sequelize);
+const availableBus = require("./availableBus")(sequelize, Sequelize);
+const busCompany = require("./busCompany")(sequelize, Sequelize);
+const bus = require("./bus.model")(sequelize, Sequelize);
+const busTerminal = require("./busTerminal")(sequelize, Sequelize);
+
 sequelize
   .authenticate()
   .then(() => {
@@ -25,8 +30,25 @@ const db = {
   Sequelize,
   users,
   roles,
+  availableBus,
+  busCompany,
+  bus,
+  busTerminal,
 };
 
 roles.hasMany(users);
 users.belongsTo(roles);
+
+busCompany.hasMany(bus);
+bus.belongsTo(busCompany);
+
+busCompany.hasMany(busTerminal);
+busTerminal.belongsTo(busCompany);
+
+busCompany.hasMany(availableBus);
+availableBus.belongsTo(busCompany);
+
+bus.hasOne(availableBus);
+availableBus.belongsTo(bus);
+
 module.exports = db;

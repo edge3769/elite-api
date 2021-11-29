@@ -1,55 +1,54 @@
 const { hash, compare } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../model");
+const {
+  createAccessToken,
+  createRefreshToken,
+  sendRefreshToken,
+  sendAccessToken,
+} = require("../utils/tokens");
 const users = db.users;
-const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.handleUserLogin = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     if (!email && !password) {
       throw new Error("Bad request");
     }
-    const user = await users.findOne({ where: { email } });
+    const user = await users.findOne({ where: { email }, include: db.roles });
 
     if (!user) {
       throw new Error("Invalid Email/Password");
     }
 
     const isPassword = await compare(password, user.password);
-
     if (!isPassword) {
       throw new Error("Invalid Email/Password");
     }
-
+    console.log(user);
     // Create token and send to client
-    let payload = {
-      id: user.id,
-    };
+    const accessToken = createAccessToken(user);
+    const refreshToken = createRefreshToken(user);
 
-    let token = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: 3600,
-    });
-
-    res.status(200).send({
-      user: {
-        email: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname,
-      },
-      token,
-    });
+    const response = await users.update(
+      { refreshToken },
+      { where: { id: user.id } }
+    );
+    console.log(refreshToken);
+    if (response.length === 1) {
+      sendRefreshToken(refreshToken, res);
+      sendAccessToken(accessToken, res);
+    }
   } catch (err) {
     res.status(400).send({ message: err.message || "Bad request" });
   }
 };
 
 exports.handleUserRegistration = async (req, res) => {
-  const { firstname, lastname, password, email } = req.body;
+  const { firstname, lastname, password, email, role } = req.body;
 
   try {
-    if (!firstname || !lastname || !password || !email) {
+    if (!firstname || !lastname || !password || !email || !role) {
       throw new Error("Bad Request");
     }
 
@@ -61,11 +60,15 @@ exports.handleUserRegistration = async (req, res) => {
     }
 
     const hashedPassword = await hash(password, 10);
+
+    const roleId = role === "user" ? "1" : "2";
+
     const response = await users.create({
       firstname,
       lastname,
       email,
       password: hashedPassword,
+      roleId,
     });
 
     if (!response) {
@@ -78,7 +81,39 @@ exports.handleUserRegistration = async (req, res) => {
     });
   } catch (err) {
     res.status(403).send({
-      message: "User with this email already exists.",
+      message:
+        err.message === "Validation error"
+          ? "User with this email already exists."
+          : err.message,
     });
   }
+};
+
+exports.handleRefreshToken = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  try {
+    if (!refreshToken) throw new Error();
+
+    const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await users.findOne({
+      where: { id: payload.id },
+      include: db.roles,
+    });
+    if (!user) throw new Error();
+    if (user.refreshToken !== refreshToken) throw new Error();
+    const accessToken = createAccessToken(user);
+    sendAccessToken(accessToken, res);
+  } catch (err) {
+    sendAccessToken("", res);
+  }
+};
+
+exports.handleLogOut = (_req, res) => {
+  res.clearCookie("refreshToken", {
+    path: "/api/auth/refreshtoken",
+  });
+  res.status(200).json({
+    message: "Log out successful",
+  });
 };

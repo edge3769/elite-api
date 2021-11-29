@@ -5,7 +5,8 @@
  const{
    transporter,
    getPasswordResetURL,
-   resetPasswordTemplate
+   resetPasswordTemplate,
+   adminEmailTemplate
  } = require("../utils/mailer/email")
 
  function usePasswordHashToMakeToken({
@@ -86,6 +87,32 @@ exports.emailController={
       .catch(() => {
         res.status(404).send("Invalid user")
       })
+  },
+  contactUs: async (req, res) => {
+        const user= req.body;
+        
+        console.log(user.fullname, user.email, user.text)
+        const admin= {email:"admin@TickectXpress.com", fullname:"adetayo Tomiwa"}
+        const sendAdminEmailTemplate =adminEmailTemplate(user, admin)
+        if(!user.fullname || !user.email || !user.text){
+            res.status(401)
+                .send({message:"fill the required field"})
+        }
+        const sendAdminEmail = () => {
+            transporter.sendMail(sendAdminEmailTemplate, (err, info) => {
+             if (err.message) {
+              return res.status(400)
+              .send("Error sending email", err)
+             }
+             console.log(`** message sent **`, info)
+               res.status(200)
+                   .send("message Sent", info)
+           })
+         }
+         sendAdminEmail()
+
+        res.status(200).send({message:"message sent to admin"})
+
   }
   
 } 

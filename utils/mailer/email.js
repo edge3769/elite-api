@@ -28,3 +28,15 @@ exports.resetPasswordTemplate = (user, url) => {
 
   return { from, to, subject, html }
 }
+
+
+exports.adminEmailTemplate = (user, admin) => {
+    const from = user.email
+    const to = admin.email
+    const subject = "🌻 Ticket Express Customer Contact Us 🌻"
+    const html = `
+    <p>A Message from ${user.fullname},</p>
+    <p>${user.text}</p>
+    `
+    return { from, to, subject, html }
+  }

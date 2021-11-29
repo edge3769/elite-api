@@ -1,10 +1,10 @@
 module.exports = (sequelize, Sequelize) => {
-  const busTerminal = sequelize.define("busTerminal", {
+  const trainStation = sequelize.define("trainStation", {
     terminalName: {
       type: Sequelize.STRING,
       allowNull: false,
     },
   });
 
-  return busTerminal;
+  return trainStation;
 };

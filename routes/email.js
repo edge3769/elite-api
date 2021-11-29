@@ -11,6 +11,10 @@ router.get('/', function(req, res, next) {
  router.post('/sendResetemail', emailController.sendPasswordResetEmail)
  // login routes
  router.post('/password/reset/:userid/:token', emailController.receiveNewPassword)
+ 
+ // contactUs routes
+ router.post('/contactUs', emailController.contactUs)
+
 
 
 module.exports = router;

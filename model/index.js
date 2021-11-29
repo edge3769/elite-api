@@ -16,7 +16,15 @@ const roles = require("./role.model")(sequelize, Sequelize);
 const availableBus = require("./availableBus")(sequelize, Sequelize);
 const busCompany = require("./busCompany")(sequelize, Sequelize);
 const bus = require("./bus.model")(sequelize, Sequelize);
-const busTerminal = require("./busTerminal")(sequelize, Sequelize);
+const busTerminal = require("./trainStation")(sequelize, Sequelize);
+
+//train model
+const train = require("./train")(sequelize, Sequelize);
+const trainCompany = require("./trainCompany")(sequelize, Sequelize);
+const availableTrain = require("./availableTrain")(sequelize, Sequelize);
+const trainStation = require("./trainStation")(sequelize, Sequelize);
+
+
 
 sequelize
   .authenticate()
@@ -34,6 +42,9 @@ const db = {
   busCompany,
   bus,
   busTerminal,
+  train,
+  trainCompany,
+  availableTrain,
 };
 
 roles.hasMany(users);
@@ -50,5 +61,17 @@ availableBus.belongsTo(busCompany);
 
 bus.hasOne(availableBus);
 availableBus.belongsTo(bus);
+
+trainCompany.hasMany(train);
+train.belongsTo(trainCompany);
+
+train.hasOne(availableTrain);
+availableTrain.belongsTo(train);
+
+trainCompany.hasMany(availableTrain);
+availableTrain.belongsTo(trainCompany);
+
+trainCompany.hasMany(trainStation);
+trainStation.belongsTo(trainCompany);
 
 module.exports = db;

@@ -26,6 +26,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://localhost:3002",
+      "https://ticketxpress.netlify.app",
     ],
     credentials: true,
   })
@@ -41,7 +42,7 @@ app.use("/api/bus", busRouter);
 app.use("/api/email", emailRouter);
 
 // Syncing The Database Tables
-db.sequelize.sync({force: true });
+db.sequelize.sync({ force: true });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

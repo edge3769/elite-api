@@ -73,7 +73,7 @@ exports.getCompanyBuses = async (req, res) => {
 exports.addBusTicketAvailability = async (req, res) => {
   const { busCompanyId, busId, from, to, timeOfDepature, busPrice } = req.body;
 
-  if (!busCompanyId || !busId || !from || !to || !timeOfDepature || busPrice) {
+  if (!busCompanyId || !busId || !from || !to || !timeOfDepature || !busPrice) {
     res.status(404).send({
       message: "Invalid Request",
     });

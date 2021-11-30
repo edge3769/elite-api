@@ -10,7 +10,7 @@ exports.createAccessToken = (user) => {
   };
 
   return sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1m",
+    expiresIn: "10m",
   });
 };
 

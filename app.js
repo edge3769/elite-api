@@ -41,7 +41,7 @@ app.use("/api/bus", busRouter);
 app.use("/api/email", emailRouter);
 
 // Syncing The Database Tables
-db.sequelize.sync();
+db.sequelize.sync({force: true });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

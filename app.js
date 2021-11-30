@@ -10,6 +10,8 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const busRouter = require("./routes/bus.route");
 const authRouter = require("./routes/auth.route");
+const emailRouter = require("./routes/email");
+
 var app = express();
 
 // view engine setup
@@ -36,25 +38,27 @@ app.use("/", indexRouter);
 app.use("/api/user", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/bus", busRouter);
+app.use("/api/email", emailRouter);
+
 
 // Syncing The Database Tables
-db.sequelize.sync();
-// .then(async () => {
-//   try {
-//     const user = await db.roles.create({ roleName: "user" });
-//     const agent = await db.roles.create({ roleName: "agent" });
-//     const admin = await db.roles.create({ roleName: "admin" });
+db.sequelize.sync()
+.then(async () => {
+  try {
+    const user = await db.roles.create({ roleName: "user" });
+    const agent = await db.roles.create({ roleName: "agent" });
+    const admin = await db.roles.create({ roleName: "admin" });
 
-//     if (user && agent && admin) {
-//     console.log("Roles Created");
-//     }
-//   } catch (err) {
-//     console.log(err.message);
-//   }
-// })
-// .catch((err) => {
-//   console.error(err.message || "Something went wrong");
-// });
+    if (user && agent && admin) {
+    console.log("Roles Created");
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
+})
+.catch((err) => {
+  console.error(err.message || "Something went wrong");
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

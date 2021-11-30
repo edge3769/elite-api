@@ -26,6 +26,8 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://localhost:3002",
+      "https://ticketxpress.netlify.app",
+      "https://ticketxpresss.netlify.app",
     ],
     credentials: true,
   })
@@ -40,25 +42,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/bus", busRouter);
 app.use("/api/email", emailRouter);
 
-
 // Syncing The Database Tables
-db.sequelize.sync()
-.then(async () => {
-  try {
-    const user = await db.roles.create({ roleName: "user" });
-    const agent = await db.roles.create({ roleName: "agent" });
-    const admin = await db.roles.create({ roleName: "admin" });
-
-    if (user && agent && admin) {
-    console.log("Roles Created");
-    }
-  } catch (err) {
-    console.log(err.message);
-  }
-})
-.catch((err) => {
-  console.error(err.message || "Something went wrong");
-});
+db.sequelize.sync();
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

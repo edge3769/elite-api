@@ -6,9 +6,7 @@ exports.getBusCompany = async (req, res) => {
     if (!busCompanies) {
       throw new Error("Invalid Request");
     }
-    res.status(200).send({
-      busCompanies,
-    });
+    res.status(200).send(busCompanies);
   } catch (err) {
     res.status(404).send({
       message: err.message,
@@ -36,9 +34,7 @@ exports.getBusTerminal = async (req, res) => {
       throw new Error("");
     }
 
-    res.status(200).send({
-      busTermial,
-    });
+    res.status(200).send(busTermial);
   } catch (err) {
     res.status(404).send({
       message: err.message,
@@ -66,9 +62,7 @@ exports.getCompanyBuses = async (req, res) => {
       throw new Error("");
     }
 
-    res.status(200).send({
-      companyBuses,
-    });
+    res.status(200).send(companyBuses);
   } catch (err) {
     res.status(404).send({
       message: err.message,
@@ -77,9 +71,9 @@ exports.getCompanyBuses = async (req, res) => {
 };
 
 exports.addBusTicketAvailability = async (req, res) => {
-  const { busCompanyId, busId, from, to, timeOfDepature } = req.body;
+  const { busCompanyId, busId, from, to, timeOfDepature, busPrice } = req.body;
 
-  if (!busCompanyId || !busId || !from || !to || !timeOfDepature) {
+  if (!busCompanyId || !busId || !from || !to || !timeOfDepature || !busPrice) {
     res.status(404).send({
       message: "Invalid Request",
     });
@@ -92,6 +86,7 @@ exports.addBusTicketAvailability = async (req, res) => {
       time_of_depature: timeOfDepature,
       busId,
       busCompanyId,
+      busPrice,
     });
 
     if (!response) {

@@ -16,15 +16,13 @@ const roles = require("./role.model")(sequelize, Sequelize);
 const availableBus = require("./availableBus")(sequelize, Sequelize);
 const busCompany = require("./busCompany")(sequelize, Sequelize);
 const bus = require("./bus.model")(sequelize, Sequelize);
-const busTerminal = require("./trainStation")(sequelize, Sequelize);
+const busTerminal = require("./busTerminal")(sequelize, Sequelize);
 
 //train model
 const train = require("./train")(sequelize, Sequelize);
 const trainCompany = require("./trainCompany")(sequelize, Sequelize);
 const availableTrain = require("./availableTrain")(sequelize, Sequelize);
 const trainStation = require("./trainStation")(sequelize, Sequelize);
-
-
 
 sequelize
   .authenticate()
@@ -45,6 +43,7 @@ const db = {
   train,
   trainCompany,
   availableTrain,
+  trainStation,
 };
 
 roles.hasMany(users);

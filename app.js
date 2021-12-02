@@ -26,7 +26,9 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
-      "http://localhost:3002"
+      "http://localhost:3002",
+      "https://ticketxpress.netlify.app",
+      "https://ticketxpresss.netlify.app",
     ],
     credentials: true,
   })

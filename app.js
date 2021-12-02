@@ -11,6 +11,7 @@ var usersRouter = require("./routes/users");
 const busRouter = require("./routes/bus.route");
 const authRouter = require("./routes/auth.route");
 const emailRouter = require("./routes/email");
+const flightRouter = require("./routes/flight.route");
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://localhost:3002",
+      "http://localhost:3306",
     ],
     credentials: true,
   })
@@ -39,6 +41,7 @@ app.use("/api/user", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/bus", busRouter);
 app.use("/api/email", emailRouter);
+app.use("/api/flight", flightRouter)
 
 // Syncing The Database Tables
 db.sequelize.sync({force: true });

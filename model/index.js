@@ -13,6 +13,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 
 const users = require("./user")(sequelize, Sequelize);
 const roles = require("./role.model")(sequelize, Sequelize);
+
 const availableBus = require("./availableBus")(sequelize, Sequelize);
 const busCompany = require("./busCompany")(sequelize, Sequelize);
 const bus = require("./bus.model")(sequelize, Sequelize);
@@ -23,6 +24,12 @@ const train = require("./train")(sequelize, Sequelize);
 const trainCompany = require("./trainCompany")(sequelize, Sequelize);
 const availableTrain = require("./availableTrain")(sequelize, Sequelize);
 const trainStation = require("./trainStation")(sequelize, Sequelize);
+
+const flight = require("./flight.model")(sequelize, Sequelize);
+const flightCompany = require("./flightCompany")(sequelize, Sequelize);
+const flightPorts = require("./flightPorts")(sequelize, Sequelize);
+const availableFlight = require("./availableFights")(sequelize, Sequelize);
+const airports = require("./airports")(sequelize, Sequelize);
 
 sequelize
   .authenticate()
@@ -44,6 +51,11 @@ const db = {
   trainCompany,
   availableTrain,
   trainStation,
+  flight,
+  flightCompany,
+  flightPorts,
+  availableFlight,
+  airports
 };
 
 roles.hasMany(users);
@@ -72,5 +84,19 @@ availableTrain.belongsTo(trainCompany);
 
 trainCompany.hasMany(trainStation);
 trainStation.belongsTo(trainCompany);
+
+flightCompany.hasMany(flight);
+flight.belongsTo(flightCompany);
+
+flightCompany.hasMany(availableFlight);
+availableFlight.belongsTo(flightCompany);
+
+flight.hasOne(availableFlight);
+availableFlight.belongsTo(flight);
+
+flightCompany.belongsToMany(flightPorts, {through : airports});
+flightPorts.belongsToMany(flightCompany, {through : airports});
+
+
 
 module.exports = db;

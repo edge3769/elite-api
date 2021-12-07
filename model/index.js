@@ -45,6 +45,7 @@ const db = {
   train,
   trainCompany,
   availableTrain,
+  trainStation
 };
 
 roles.hasMany(users);

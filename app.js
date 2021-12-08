@@ -9,6 +9,7 @@ const db = require("./model");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const busRouter = require("./routes/bus.route");
+const trainRouter = require("./routes/train");
 const authRouter = require("./routes/auth.route");
 const emailRouter = require("./routes/email");
 const flightRouter = require("./routes/flight.route");
@@ -41,6 +42,7 @@ app.use("/", indexRouter);
 app.use("/api/user", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/bus", busRouter);
+app.use("/api/train", trainRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/flight", flightRouter)
 

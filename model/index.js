@@ -54,8 +54,8 @@ const db = {
   flight,
   flightCompany,
   flightPorts,
-  availableFlight,
-  airports
+  availableFlight
+  
 };
 
 roles.hasMany(users);

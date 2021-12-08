@@ -12,6 +12,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    busPrice: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
   });
 
   return availableBus;

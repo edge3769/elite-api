@@ -3,7 +3,7 @@ const {
   handleUserLogin,
   handleRefreshToken,
   handleLogOut,
-} = require("../controller/auth.controller");
+} = require("../controller/auth");
 const router = require("express").Router();
 
 router.post("/login", handleUserLogin);

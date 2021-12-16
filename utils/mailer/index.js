@@ -19,7 +19,7 @@ exports.handleUserVerification = (user) => {
                <body>
                <h1 style="color:orange;">Ticket Express </h1>
                <br>
-               <h4> Hello ${user.firstname} ${user.lastname} </h4>
+               <h4> Hello ${user.firstName} ${user.lastName} </h4>
                <br>
                <p style="color:gray;"> Thank you for registering with us </p>
                <br>
@@ -51,7 +51,7 @@ exports.handlePasswordReset = (user) => {
                <body>
                <h1 style="color:orange;">Ticket Express </h1>
                <br>
-               <h4> Hello ${user.firstname} ${user.lastname} </h4>
+               <h4> Hello ${user.firstName} ${user.lastName} </h4>
                <br>
                <p><a href="http://localhost/resetpassword?id=${user.id}"> Click Here </a> To Reset Your Password </p>
                </body>

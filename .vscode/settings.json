@@ -1,0 +1,20 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "window.autoDetectColorScheme": true,
+  "prettier.arrowParens": "avoid",
+  "prettier.enableDebugLogs": true,
+  "prettier.insertPragma": true,
+  "prettier.printWidth": 61,
+  "prettier.requireConfig": true,
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "none",
+  "prettier.useTabs": true,
+  "workbench.preferredDarkColorTheme": "GitHub Dark Dimmed",
+  "workbench.colorTheme": "GitHub Dark Dimmed",
+  "workbench.iconTheme": "vs-minimal",
+  "workbench.tree.indent": 1,
+  "editor.formatOnType": true,
+  "diffEditor.codeLens": true,
+  "workbench.editor.openPositioning": "left"
+}

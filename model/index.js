@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const { DB_NAME, DB_USER, DB_HOST, DB_PASSWORD } = process.env;
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
-  dialect: "mysql",
+  dialect: "postgres",
   pool: {
     max: 5,
     min: 0,
@@ -11,25 +11,12 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   },
 });
 
-const users = require("./user")(sequelize, Sequelize);
-const roles = require("./role.model")(sequelize, Sequelize);
+const user = require("./user")(sequelize, Sequelize);
 
-const availableBus = require("./availableBus")(sequelize, Sequelize);
-const busCompany = require("./busCompany")(sequelize, Sequelize);
-const bus = require("./bus.model")(sequelize, Sequelize);
-const busTerminal = require("./busTerminal")(sequelize, Sequelize);
+const userItn = require("./userItn")(sequelize, Sequelize);
+const itn = require("./itn")(sequelize, Sequelize);
 
-//train model
-const train = require("./train")(sequelize, Sequelize);
-const trainCompany = require("./trainCompany")(sequelize, Sequelize);
-const availableTrain = require("./availableTrain")(sequelize, Sequelize);
-const trainStation = require("./trainStation")(sequelize, Sequelize);
-
-const flight = require("./flight.model")(sequelize, Sequelize);
-const flightCompany = require("./flightCompany")(sequelize, Sequelize);
-const flightPorts = require("./flightPorts")(sequelize, Sequelize);
-const availableFlight = require("./availableFights")(sequelize, Sequelize);
-const airports = require("./airports")(sequelize, Sequelize);
+const seat = require("./seat")(sequelize, Sequelize);
 
 sequelize
   .authenticate()
@@ -38,65 +25,46 @@ sequelize
   })
   .catch((err) => console.log(err));
 
+// const queryInterface = sequelize.getQueryInterface()
+// queryInterface.addConstraint('users', {
+//   fields: ['role'],
+//   type: 'check',
+//   where: {
+//     role: {
+//       [Sequelize.Op.or]: ['admin', 'agent', 'user']
+//     }
+//   },
+//   // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+// })
+
+// queryInterface.addConstraint("itns", {
+//   fields: ["mode"],
+//   type: "check",
+//   where: {
+//     mode: {
+//       [Sequelize.Op.or]: ["air", "bus", "train"],
+//     },
+//   },
+//   // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+// });
+
 const db = {
   sequelize,
   Sequelize,
-  users,
-  roles,
-  availableBus,
-  busCompany,
-  bus,
-  busTerminal,
-  train,
-  trainCompany,
-  availableTrain,
-  trainStation,
-  flight,
-  flightCompany,
-  flightPorts,
-  availableFlight
-  
+  user,
+  itn,
+  seat,
 };
 
-roles.hasMany(users);
-users.belongsTo(roles);
+itn.hasMany(seat)
+seat.belongsTo(itn)
 
-busCompany.hasMany(bus);
-bus.belongsTo(busCompany);
+itn.belongsToMany(itn, { as: 'itns', through: 'segments'})
 
-busCompany.hasMany(busTerminal);
-busTerminal.belongsTo(busCompany);
+itn.belongsToMany(user, { through: userItn });
+user.belongsToMany(itn, { through: userItn })
 
-busCompany.hasMany(availableBus);
-availableBus.belongsTo(busCompany);
-
-bus.hasOne(availableBus);
-availableBus.belongsTo(bus);
-
-trainCompany.hasMany(train);
-train.belongsTo(trainCompany);
-
-train.hasOne(availableTrain);
-availableTrain.belongsTo(train);
-
-trainCompany.hasMany(availableTrain);
-availableTrain.belongsTo(trainCompany);
-
-trainCompany.hasMany(trainStation);
-trainStation.belongsTo(trainCompany);
-
-flightCompany.hasMany(flight);
-flight.belongsTo(flightCompany);
-
-flightCompany.hasMany(availableFlight);
-availableFlight.belongsTo(flightCompany);
-
-flight.hasOne(availableFlight);
-availableFlight.belongsTo(flight);
-
-flightCompany.belongsToMany(flightPorts, {through : airports});
-flightPorts.belongsToMany(flightCompany, {through : airports});
-
-
+user.hasMany(itn)
+itn.belongsTo(user, { as: 'owner' })
 
 module.exports = db;

@@ -8,11 +8,8 @@ var logger = require("morgan");
 const db = require("./model");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-const busRouter = require("./routes/bus.route");
-const trainRouter = require("./routes/train");
 const authRouter = require("./routes/auth.route");
 const emailRouter = require("./routes/email");
-const flightRouter = require("./routes/flight.route");
 
 var app = express();
 
@@ -39,15 +36,28 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/api/user", usersRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/bus", busRouter);
-app.use("/api/train", trainRouter);
-app.use("/api/email", emailRouter);
-app.use("/api/flight", flightRouter)
+app.use("/user", usersRouter);
+app.use("/auth", authRouter);
+app.use("/email", emailRouter);
 
 // Syncing The Database Tables
-db.sequelize.sync({force: true });
+db.sequelize.sync({ force: true });
+
+async function setup() {
+  await db.sequelize.sync({ force: true });
+  const states = nigeria.states;
+  const cities = states.reduce((a, b) => a.concat(b.cities), []);
+  const dbCities = cities.map((c) => {
+    return {
+      terminalName: c.name,
+      busCompanyId: 1,
+    };
+  });
+
+  await db.busTerminal.bulkCreate(dbCities);
+}
+
+(async () => await setup())()
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -17,7 +17,7 @@ exports.resetPasswordTemplate = (user, url) => {
   const to = user.email
   const subject = "🌻 Ticket Express Password Reset 🌻"
   const html = `
-  <p>Hey ${user.firstname},</p>
+  <p>Hey ${user.firstName},</p>
   <p>We heard that you lost your Ticket Express password. Sorry about that!</p>
   <p>But don’t worry! You can use the following link to reset your password:</p>
   <a href=${url}>${url}</a>

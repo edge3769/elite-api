@@ -4,9 +4,9 @@ exports.createAccessToken = (user) => {
   const payload = {
     id: user.id,
     email: user.email,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    role: user.role.roleName,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    role: user.role,
   };
 
   return sign(payload, process.env.ACCESS_TOKEN_SECRET, {
@@ -18,9 +18,9 @@ exports.createRefreshToken = (user) => {
   const payload = {
     id: user.id,
     email: user.email,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    role: user.role.roleName,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    role: user.role,
   };
 
   return sign(payload, process.env.REFRESH_TOKEN_SECRET, {

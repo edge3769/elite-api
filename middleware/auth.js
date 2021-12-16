@@ -5,7 +5,7 @@ verifyToken = (req, res, next) => {
   const authorization = req.headers["authorization"];
   if (!authorization) {
     return res.status(403).send({
-      message: "Unauthorized Access",
+      message: "'authorization' key not in headers",
     });
   }
 
@@ -17,7 +17,7 @@ verifyToken = (req, res, next) => {
     next();
   } catch (err) {
     res.status(401).send({
-      message: err.message || "Not authorized",
+      message: err.message || "Unauthorized",
     });
   }
 };

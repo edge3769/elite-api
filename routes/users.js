@@ -2,7 +2,7 @@ const {
   getUserDetails,
   resetUserPassword,
   updateUserProfile,
-} = require("../controller/user.controller");
+} = require("../controller/user");
 const jwtAuth = require("../middleware/auth");
 
 const router = require("express").Router();

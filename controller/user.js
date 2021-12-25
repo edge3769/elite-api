@@ -14,7 +14,7 @@ exports.getUserDetails = async (req, res) => {
 
     const {
       firstName,
-      lastname,
+      lastName,
       email,
       gender,
       country,
@@ -25,7 +25,7 @@ exports.getUserDetails = async (req, res) => {
 
     res.status(200).send({
       firstName,
-      lastname,
+      lastName,
       email,
       role,
       gender,

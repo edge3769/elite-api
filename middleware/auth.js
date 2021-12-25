@@ -8,7 +8,6 @@ verifyToken = (req, res, next) => {
       message: "'authorization' key not in headers",
     });
   }
-
   const token = authorization.split(" ")[1];
   try {
     if (!token) throw new Error();
@@ -22,6 +21,4 @@ verifyToken = (req, res, next) => {
   }
 };
 
-const jwtAuth = { verifyToken };
-
-module.exports = jwtAuth;
+module.exports = { verifyToken }

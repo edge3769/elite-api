@@ -15,6 +15,4 @@ router.get('/', function(req, res, next) {
  // contactUs routes
  router.post('/contactUs', emailController.contactUs)
 
-
-
 module.exports = router;

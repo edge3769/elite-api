@@ -25,29 +25,6 @@ sequelize
   })
   .catch((err) => console.log(err));
 
-// const queryInterface = sequelize.getQueryInterface()
-// queryInterface.addConstraint('users', {
-//   fields: ['role'],
-//   type: 'check',
-//   where: {
-//     role: {
-//       [Sequelize.Op.or]: ['admin', 'agent', 'user']
-//     }
-//   },
-//   // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-// })
-
-// queryInterface.addConstraint("itns", {
-//   fields: ["mode"],
-//   type: "check",
-//   where: {
-//     mode: {
-//       [Sequelize.Op.or]: ["air", "bus", "train"],
-//     },
-//   },
-//   // deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
-// });
-
 const db = {
   sequelize,
   Sequelize,
@@ -59,7 +36,7 @@ const db = {
 itn.hasMany(seat)
 seat.belongsTo(itn)
 
-itn.belongsToMany(itn, { as: 'itns', through: 'segments'})
+itn.belongsToMany(itn, { otherKey: 'subId', as: 'itns', through: 'segments'})
 
 itn.belongsToMany(user, { through: userItn });
 user.belongsToMany(itn, { through: userItn })

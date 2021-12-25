@@ -34,9 +34,9 @@ exports.sendAccessToken = (accessToken, res) => {
   });
 };
 
-exports.sendRefreshToken = (refreshToken, res) => {
+exports.setRefreshToken = (refreshToken, res) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    path: "/api/auth/refreshtoken",
+    path: "/auth/refreshtoken",
   });
 };

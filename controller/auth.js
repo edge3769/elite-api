@@ -4,73 +4,89 @@ const db = require("../model");
 const {
   createAccessToken,
   createRefreshToken,
-  sendRefreshToken,
+  setRefreshToken,
   sendAccessToken,
 } = require("../utils/tokens");
-const users = db.users;
+const users = db.user;
 
 exports.handleUserLogin = async (req, res) => {
   const { email, password } = req.body;
-  try {
-    if (!email && !password) {
-      throw new Error("Bad request");
-    }
-    const user = await users.findOne({ where: { email } });
+  if (!email) {
+    return res
+      .status(400)
+      .json({ field: "email", error: "email not provided" });
+  }
+  if (!password) {
+    return res
+      .status(400)
+      .json({ field: "password", error: "password not provided" });
+  }
 
-    if (!user) {
-      throw new Error("User with that email does not exist");
-    }
+  const user = await db.user.findOne({ where: { email } });
 
-    const isPassword = await compare(password, user.password);
-    if (!isPassword) {
-      throw new Error("Wrong password");
-    }
-    console.log(user);
-    // Create token and send to client
-    const accessToken = createAccessToken(user);
-    const refreshToken = createRefreshToken(user);
+  if (!user) {
+    return res
+      .status(404)
+      .json({ field: "email", error: "user with that email does not exist" });
+  }
 
-    const response = await users.update(
-      { refreshToken },
-      { where: { id: user.id } }
-    );
-    console.log(refreshToken);
-    if (response.length === 1) {
-      sendRefreshToken(refreshToken, res);
-      sendAccessToken(accessToken, res);
-    }
-  } catch (err) {
-    res.status(400).send({ message: err.message || "Bad request" });
+  const isPassword = await compare(password, user.password);
+
+  if (!isPassword) {
+    return res.status(404).json({ field: "password", error: "wrong password" });
+  }
+  const accessToken = createAccessToken(user);
+  const refreshToken = createRefreshToken(user);
+
+  const response = await db.user.update(
+    { refreshToken },
+    { where: { id: user.id } }
+  );
+  console.log(refreshToken);
+  if (response.length === 1) {
+    setRefreshToken(refreshToken, res);
+    // sendAccessToken(accessToken, res);
+    res.status(200).json({
+      accessToken,
+      user: user.toJSON()
+    })
   }
 };
 
 exports.handleUserRegistration = async (req, res) => {
-  const { firstName, lastName, password, email } = req.body;
-
-  const requiredParams = [firstName, lastName, password, email];
+  console.log("ezoda");
+  const requiredParams = ["firstName", "lastName", "password", "email"];
   for (let p of requiredParams) {
-    if (!p) return res.status(400).send({ error: `${p} not provided` });
+    if (!req.body[p]) {
+      console.log("!p", p);
+      res.status(400).json({ message: `${p} not provided` });
+      return;
+    }
   }
 
+  const { firstName, lastName, password, email } = req.body;
+
   if (password.length < 8) {
-    return res.status(449).send({
+    return res.status(449).json({
       error: "Password should be at least 8 characters",
     });
   }
 
   const hashedPassword = await hash(password, 10);
 
-  const user = await users.create({
+  const user = await db.user.create({
     firstName,
     lastName,
     email,
     password: hashedPassword,
+    role: 'admin'
   });
 
-  if (!response) {
-    return res.status(500).send({ error: "Unknown error creating user" });
+  if (!user) {
+    return res.status(500).json({ error: "Unknown error creating user" });
   }
 
+  console.log(user.toJSON());
   res.status(201).send(user.toJSON());
 };
 
@@ -95,7 +111,7 @@ exports.handleRefreshToken = async (req, res) => {
 
 exports.handleLogOut = (_req, res) => {
   res.clearCookie("refreshToken", {
-    path: "/api/auth/refreshtoken",
+    path: "/auth/refreshtoken",
   });
   res.status(200).json({
     message: "Log out successful",

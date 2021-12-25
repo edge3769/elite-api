@@ -1,4 +1,7 @@
 require("dotenv").config();
+
+const { hash } = require("bcrypt");
+const nigeria = require("./nigeria.json");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -6,10 +9,11 @@ const cors = require("cors");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const db = require("./model");
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-const authRouter = require("./routes/auth.route");
-const emailRouter = require("./routes/email");
+var index = require("./routes/index");
+var user = require("./routes/user");
+const auth = require("./routes/auth");
+const email = require("./routes/email");
+const itn = require('./routes/itn')
 
 var app = express();
 
@@ -35,29 +39,37 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/user", usersRouter);
-app.use("/auth", authRouter);
-app.use("/email", emailRouter);
+app.use("/", index);
+app.use("/user", user);
+app.use("/auth", auth);
+app.use("/email", email);
+app.use("/itn", itn);
 
 // Syncing The Database Tables
-db.sequelize.sync({ force: true });
+// db.sequelize.sync({ force: true });
 
-async function setup() {
-  await db.sequelize.sync({ force: true });
-  const states = nigeria.states;
-  const cities = states.reduce((a, b) => a.concat(b.cities), []);
-  const dbCities = cities.map((c) => {
-    return {
-      terminalName: c.name,
-      busCompanyId: 1,
-    };
-  });
+// async function setup() {
+//   // const states = nigeria.states;
+//   // const cities = states.reduce((a, b) => a.concat(b.cities), []);
+//   // const dbCities = cities.map((c) => {
+//   //   return {
+//   //     terminalName: c.name,
+//   //     busCompanyId: 1,
+//   //   };
+//   // });
+//   // await db.busTerminal.bulkCreate(dbCities);
 
-  await db.busTerminal.bulkCreate(dbCities);
-}
+//   const hashedPassword = await hash('ellozuma', 10);
+//   await db.user.create({
+//     firstName: 'e',
+//     lastName: 'd',
+//     email: 'ellozuma@email.com',
+//     password: hashedPassword,
+//     role: 'admin'
+//   });
+// }
 
-(async () => await setup())()
+// (async () => await setup())()
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

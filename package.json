@@ -28,5 +28,10 @@
     "pug": "3.0.2",
     "sequelize": "^6.11.0",
     "sequelize-cli": "^6.3.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^27.4.5",
+    "supertest": "^6.1.6"
   }
 }

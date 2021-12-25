@@ -16,5 +16,7 @@
   "workbench.tree.indent": 1,
   "editor.formatOnType": true,
   "diffEditor.codeLens": true,
-  "workbench.editor.openPositioning": "left"
+  "workbench.editor.openPositioning": "left",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true
 }

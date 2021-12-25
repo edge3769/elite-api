@@ -2,7 +2,10 @@ module.exports = (sequelize, Sequelize) => {
   const Users = sequelize.define("user", {
     role: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: true,
+      validate: {
+        isIn: [['admin', 'agent', 'user']]
+      }
     },
     firstName: {
       type: Sequelize.STRING,
@@ -41,7 +44,7 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: false,
     },
     refreshToken: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(2048),
     },
   });
   return Users;
